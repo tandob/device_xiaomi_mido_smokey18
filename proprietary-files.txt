@@ -916,14 +916,6 @@ vendor/lib64/libGLESv2_adreno.so|95e2f75b4cfbfc454bd7df953d9d9a784d888100
 vendor/lib64/libq3dtools_adreno.so|6cc667b463e023f5baf75a9917c49a7020f30f6d
 vendor/lib64/libq3dtools_esx.so|1ffb5bc9fdde6b771ac4747fd03eab869f8bacb6
 
-# Graphics (hwcomposer) - from LA.UM.8.6.r1-04400-89xx.0
-vendor/lib/hw/hwcomposer.msm8953.so|32a322e2bae0a502e99d7a2a2c33da6218acef7d
-vendor/lib/libsdmutils.so|8f02e593ad9c59135906086902cf5866e6869755
-vendor/lib/libsdmcore.so|2c73a23424e350a3fea4ee3c8612346101799464
-vendor/lib64/hw/hwcomposer.msm8953.so|0345b6427445a62d3f6182162599ea467bb852ab
-vendor/lib64/libsdmutils.so|016450d0366fbd487aa45585afc7d3b81551bed1
-vendor/lib64/libsdmcore.so|2dbe7125f5fd8a116c8bc03fefc0c9b9d963d3eb
-
 # Graphics (Postprocessing) - from LA.UM.8.6.r1-04400-89xx.0
 etc/permissions/com.qti.snapdragon.sdk.display.xml|79a36c560f8cdbfeca03911fefc282bda25b2322
 framework/com.qti.snapdragon.sdk.display.jar|495d45dd84a61e873a3d1176ab7741826e60d7f1
