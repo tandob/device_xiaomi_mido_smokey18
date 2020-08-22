@@ -441,6 +441,12 @@ function sdm660_sched_interactive_dcvs() {
     # re-enable thermal and BCL hotplug
     echo 1 > /sys/module/msm_thermal/core_control/enabled
 
+    #Enable input boost configuration
+    echo "0:1401600" > /sys/module/cpu_boost/parameters/input_boost_freq
+    echo 60 > /sys/module/cpu_boost/parameters/input_boost_ms
+    echo "0:0 1:0 2:0 3:0 4:1747200 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
+    echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
+
     # Enable bus-dcvs
     for cpubw in /sys/class/devfreq/*qcom,cpubw*
         do
@@ -678,64 +684,11 @@ if [ "$ProductName" == "msmnile" ] || [ "$ProductName" == "kona" ] || [ "$Produc
 else
     arch_type=`uname -m`
 
-    # Set parameters for 32-bit Go targets.
-    if [ "$low_ram" == "true" ]; then
-        # Disable KLMK, ALMK, PPR & Core Control for Go devices
-        echo 0 > /sys/module/lowmemorykiller/parameters/enable_lmk
-        echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-        echo 0 > /sys/module/process_reclaim/parameters/enable_process_reclaim
-        disable_core_ctl
         # Enable oom_reaper for Go devices
         if [ -f /proc/sys/vm/reap_mem_on_sigkill ]; then
             echo 1 > /proc/sys/vm/reap_mem_on_sigkill
         fi
     else
-
-        # Read adj series and set adj threshold for PPR and ALMK.
-        # This is required since adj values change from framework to framework.
-        adj_series=`cat /sys/module/lowmemorykiller/parameters/adj`
-        adj_1="${adj_series#*,}"
-        set_almk_ppr_adj="${adj_1%%,*}"
-
-        # PPR and ALMK should not act on HOME adj and below.
-        # Normalized ADJ for HOME is 6. Hence multiply by 6
-        # ADJ score represented as INT in LMK params, actual score can be in decimal
-        # Hence add 6 considering a worst case of 0.9 conversion to INT (0.9*6).
-        # For uLMK + Memcg, this will be set as 6 since adj is zero.
-        set_almk_ppr_adj=$(((set_almk_ppr_adj * 6) + 6))
-        echo $set_almk_ppr_adj > /sys/module/lowmemorykiller/parameters/adj_max_shift
-
-        # Calculate vmpressure_file_min as below & set for 64 bit:
-        # vmpressure_file_min = last_lmk_bin + (last_lmk_bin - last_but_one_lmk_bin)
-        if [ "$arch_type" == "aarch64" ]; then
-            minfree_series=`cat /sys/module/lowmemorykiller/parameters/minfree`
-            minfree_1="${minfree_series#*,}" ; rem_minfree_1="${minfree_1%%,*}"
-            minfree_2="${minfree_1#*,}" ; rem_minfree_2="${minfree_2%%,*}"
-            minfree_3="${minfree_2#*,}" ; rem_minfree_3="${minfree_3%%,*}"
-            minfree_4="${minfree_3#*,}" ; rem_minfree_4="${minfree_4%%,*}"
-            minfree_5="${minfree_4#*,}"
-
-            vmpres_file_min=$((minfree_5 + (minfree_5 - rem_minfree_4)))
-            echo $vmpres_file_min > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
-        else
-            # Set LMK series, vmpressure_file_min for 32 bit non-go targets.
-            # Disable Core Control, enable KLMK for non-go 8909.
-            if [ "$ProductName" == "msm8909" ]; then
-                disable_core_ctl
-                echo 1 > /sys/module/lowmemorykiller/parameters/enable_lmk
-            fi
-        echo "15360,19200,23040,26880,34415,43737" > /sys/module/lowmemorykiller/parameters/minfree
-        echo 53059 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
-        fi
-
-        # Enable adaptive LMK for all targets &
-        # use Google default LMK series for all 64-bit targets >=2GB.
-        echo 1 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-
-        # Enable oom_reaper
-        if [ -f /sys/module/lowmemorykiller/parameters/oom_reaper ]; then
-            echo 1 > /sys/module/lowmemorykiller/parameters/oom_reaper
-        fi
 
         if [[ "$ProductName" != "bengal"* ]]; then
             #bengal has appcompaction enabled. So not needed
@@ -755,7 +708,6 @@ else
                 ;;
               *)
                 #Set PPR parameters for all other targets.
-                echo $set_almk_ppr_adj > /sys/module/process_reclaim/parameters/min_score_adj
                 echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
                 echo 50 > /sys/module/process_reclaim/parameters/pressure_min
                 echo 70 > /sys/module/process_reclaim/parameters/pressure_max
@@ -2756,7 +2708,9 @@ case "$target" in
             echo 0 > /sys/module/lpm_levels/parameters/sleep_disabled
 
             # Start cdsprpcd only for sdm660 and disable for sdm630
-            start vendor.cdsprpcd
+            if [ "$soc_id" -eq "317" ]; then
+                start vendor.cdsprpcd
+            fi
 
             # Start Host based Touch processing
                 case "$hw_platform" in
@@ -2954,7 +2908,7 @@ case "$target" in
         fi
 
         case "$soc_id" in
-            "336" | "337" | "347" | "360" | "393" )
+            "336" | "337" | "347" | "360" | "393" | "370" | "371" )
 
             # Start Host based Touch processing
             case "$hw_platform" in
