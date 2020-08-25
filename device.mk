@@ -306,7 +306,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     fstab.qcom \
     init.goodix.sh \
-    init.msm.usb.configfs.rc \
     init.qcom.early_boot.sh \
     init.qcom.post_boot.sh \
     init.class_main.sh \
@@ -325,6 +324,11 @@ PRODUCT_PACKAGES += \
     init.parallax.sh \
     init.camera.rc \
     init.camera.sh
+
+ifeq ($(TARGET_KERNEL_VERSION),4.9)
+PRODUCT_PACKAGES += \
+    init.msm.usb.configfs.rc
+endif
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
