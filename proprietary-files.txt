@@ -900,6 +900,7 @@ vendor/lib64/libhdr_tm.so|70c80f029af379c525acc9ac61719777f303f6b6
 vendor/lib64/libllvm-glnext.so|23891b82acc8f719874c73c41d480e4e8399c49e
 vendor/lib64/libllvm-qcom.so|5b9c69743b6563094fb6879135c32e29acaccafa
 vendor/lib64/libmm-hdcpmgr.so|73d428151e99086ac3e48db95a660e7d7807a8e3
+<<<<<<< HEAD
 vendor/lib64/librs_adreno.so|f76ffe1488c0622698b15884940eb6fd33346a71
 vendor/lib64/librs_adreno_sha1.so|13dc11654b454d5d5ebe5583765811e4fa11ba4a
 vendor/etc/permissions/android.hardware.opengles.aep.xml|aa43dad85f2c2d65f0ac2afb1f5425e1220b832b
@@ -915,6 +916,10 @@ vendor/lib64/libGLESv1_CM_adreno.so|da7ff3c888b7c03e7260d97ffbfa0b605fc2c5b0
 vendor/lib64/libGLESv2_adreno.so|95e2f75b4cfbfc454bd7df953d9d9a784d888100
 vendor/lib64/libq3dtools_adreno.so|6cc667b463e023f5baf75a9917c49a7020f30f6d
 vendor/lib64/libq3dtools_esx.so|1ffb5bc9fdde6b771ac4747fd03eab869f8bacb6
+=======
+vendor/lib64/librs_adreno.so|a887f0542d5fcd45a437db9bf04ac77ee480bd0e
+vendor/lib64/librs_adreno_sha1.so|cc1701cb536532fc6269142db82f7c2deec30cf5
+>>>>>>> pr/1
 
 # Graphics (Postprocessing) - from LA.UM.8.6.r1-04400-89xx.0
 etc/permissions/com.qti.snapdragon.sdk.display.xml|79a36c560f8cdbfeca03911fefc282bda25b2322
